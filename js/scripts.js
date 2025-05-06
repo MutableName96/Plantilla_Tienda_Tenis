@@ -18,28 +18,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función para agregar producto al carrito
     function addToCart(event) {
         const button = event.target;
-        console.log('Botón presionado:', button); // Verifica el botón que fue presionado
         const card = button.closest('.card');
         const productName = card.querySelector('.fw-bolder').textContent;
         
-        // Extraer precio (maneja diferentes formatos de precio)
-        let priceText = card.querySelector('.card-body').textContent;
-        let price;
+        // Extraer precio de manera más confiable
+        const cardBody = card.querySelector('.card-body');
+        let priceText = cardBody.textContent.trim();
         
-        // Buscar el precio más bajo si hay un rango
-        if (priceText.includes('-')) {
-            const prices = priceText.match(/\$\d+\.\d+/g);
-            price = parseFloat(prices[0].replace('$', ''));
-        } 
-        // Buscar precio con descuento
-        else if (priceText.includes('text-decoration-line-through')) {
-            const prices = priceText.match(/\$\d+\.\d+/g);
-            price = parseFloat(prices[1].replace('$', ''));
-        }
-        // Precio normal
-        else {
-            const priceMatch = priceText.match(/\$\d+\.\d+/);
-            price = priceMatch ? parseFloat(priceMatch[0].replace('$', '')) : 0;
+        // Buscar el último precio mostrado (que es el precio actual)
+        const priceMatches = priceText.match(/\$\d+(?:,\d{3})*(?:\.\d{2})?/g);
+        
+        let price = 0;
+        if (priceMatches) {
+            // Tomar el último precio encontrado (para manejar casos con descuento)
+            const lastPrice = priceMatches[priceMatches.length - 1];
+            price = parseFloat(lastPrice.replace(/[^\d.]/g, ''));
         }
         
         // Buscar imagen
@@ -60,8 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         updateCartBadge();
-        
-        // Mostrar notificación
         showNotification(`${productName} añadido al carrito`);
     }
     

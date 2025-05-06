@@ -5818,6 +5818,12 @@ textarea.form-control-lg {
   }
 }
 
+.carousel-item img {
+  height: 800px;
+  width: 100%;
+  object-fit: cover;
+}
+
 .carousel-item.active,
 .carousel-item-next,
 .carousel-item-prev {
