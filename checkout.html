@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Finalizar Compra</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            margin-top: 50px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        #product-list {
+            margin-bottom: 20px;
+        }
+
+        .product {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+
+        .product-info {
+            flex-grow: 1;
+        }
+
+        .product-info h5 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .product-info p {
+            margin: 5px 0;
+        }
+
+        #total {
+            font-weight: bold;
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Finalizar Compra</h1>
+        <div id="product-list"></div>
+        <div id="total"></div>
+        <button id="checkout-btn" disabled>Finalizar Compra</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Obtener los productos del carrito desde el localStorage
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            console.log('Carrito en la página de compra:', cart);
+
+            // Referencias a los elementos del DOM
+            const productList = document.querySelector('#product-list');
+            const totalDiv = document.querySelector('#total');
+            const checkoutBtn = document.querySelector('#checkout-btn');
+
+            // Función para actualizar el contenido de los productos
+            function updateCheckoutContent() {
+                productList.innerHTML = '';
+
+                if (cart.length === 0) {
+                    productList.innerHTML = '<p>Tu carrito está vacío</p>';
+                    totalDiv.textContent = '';
+                    checkoutBtn.disabled = true;
+                    return;
+                }
+
+                let total = 0;
+
+                cart.forEach((item) => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.classList.add('product');
+
+                    // Imagen
+                    const img = document.createElement('img');
+                    img.src = item.image;
+                    img.alt = item.name;
+
+                    // Info
+                    const infoDiv = document.createElement('div');
+                    infoDiv.classList.add('product-info');
+
+                    const name = document.createElement('h5');
+                    name.textContent = item.name;
+
+                    const price = document.createElement('p');
+                    price.textContent = `$${item.price.toFixed(2)} x ${item.quantity}`;
+
+                    const subtotal = document.createElement('p');
+                    subtotal.textContent = `Subtotal: $${(item.price * item.quantity).toFixed(2)}`;
+
+                    infoDiv.appendChild(name);
+                    infoDiv.appendChild(price);
+                    infoDiv.appendChild(subtotal);
+
+                    itemDiv.appendChild(img);
+                    itemDiv.appendChild(infoDiv);
+
+                    productList.appendChild(itemDiv);
+
+                    total += item.price * item.quantity;
+                });
+
+                totalDiv.textContent = `Total: $${total.toFixed(2)}`;
+                checkoutBtn.disabled = false;
+            }
+
+            // Función para proceder con la compra
+            checkoutBtn.addEventListener('click', function () {
+                if (cart.length === 0) {
+                    alert('Tu carrito está vacío, no puedes proceder con la compra.');
+                    return;
+                }
+
+                // Simulación de proceso de compra
+                alert('¡Compra realizada con éxito!');
+                localStorage.removeItem('cart'); // Limpiar el carrito después de la compra
+                window.location.href = 'index.html'; // Redirige a una página de agradecimiento
+            });
+
+            // Inicializar contenido de checkout
+            updateCheckoutContent();
+        });
+    </script>
+</body>
+
+</html>
